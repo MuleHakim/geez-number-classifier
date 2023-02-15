@@ -7,8 +7,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:geez_numbers_flutter/main.dart';
 import 'package:geez_numbers_flutter/pages/splash_screen.dart';
 
 void main() {

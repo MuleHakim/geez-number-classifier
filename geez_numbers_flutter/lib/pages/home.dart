@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geez_numbers_flutter/pages/predicted.dart';
+import 'package:geez_numbers_flutter/utility/predicted.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../api/urls.dart';
 import '../widgets/button.dart';
 
@@ -17,8 +16,19 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+
   int _selectedIndex = 0;
   File? image;
+  String number = "click predict button to continue";
+  var word_dict = {0:"-", 1:"፩", 2:"፪", 3:"፫", 4:"፬", 5:"፭", 6:"፮", 7:"፯", 8:"፰", 9:"፱", 10:'ሀ',11:'ሁ',12:'ሂ',13:'ሃ',14:"ሄ",15:'ህ',16:'ሆ',17:"ለ",18:"ሉ",
+  19:"ሊ",20:"ላ",21:"ሌ",22:"ል",23:"ሎ",24:"ሐ",25:"ሑ",26:"ሒ",27:"ሓ",28:"ሔ",29:"ሕ",30:"ሖ",
+  31:"መ",32:"ሙ",33:"ሚ",34:"ማ",35:"ሜ",36:"ም",37:"ሞ"
+  };
+
+  void reset_number(){
+    number = "click predict button to continue";
+    setState((){});
+  }
 
   Future PickFromFile() async {
     try {
@@ -30,6 +40,7 @@ class HomePageState extends State<HomePage> {
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
+    reset_number();
   }
 
   Future PickFromCamera() async {
@@ -42,11 +53,10 @@ class HomePageState extends State<HomePage> {
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
+    reset_number();
   }
   void _upload(File? file) async {
     String? fileName = file?.path.split('/').last;
-    print(fileName);
-
     FormData data = FormData.fromMap({
       "image_url": await MultipartFile.fromFile(
         "${file?.path}",
@@ -57,9 +67,11 @@ class HomePageState extends State<HomePage> {
 
     Dio dio = new Dio();
 
-    dio.post(ApiUrls.createUrl, data: data).then((response) {
+    dio.post(ApiUrls.createUrl, data: data).then((response) async{
       var jsonResponse = jsonDecode(response.toString());
-      print(jsonResponse);
+      number = json.decode(((await client.get(Uri.parse(ApiUrls.predictNumberUrl))).body)) as String;
+      setState((){});
+      number = word_dict[int.parse(number)]!;
     }).catchError((error) => print(error));
   }
 
@@ -69,9 +81,8 @@ class HomePageState extends State<HomePage> {
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 1, 15, 26),
-            image: DecorationImage(
-                image: AssetImage("assets/images/logo.png"), opacity: 0.15)),
+          color: const Color.fromARGB(255, 1, 3, 22),
+            ),
         child: Column(
           mainAxisAlignment: image == null
               ? MainAxisAlignment.center
@@ -86,7 +97,7 @@ class HomePageState extends State<HomePage> {
                             height: 400,
                             width: 400,
                             margin: const EdgeInsets.only(
-                                top: 100, bottom: 100, left: 10, right: 10),
+                                top: 100, bottom: 50, left: 15, right: 15),
                             padding: const EdgeInsets.all(0),
                             clipBehavior: Clip.hardEdge,
                             decoration: BoxDecoration(
@@ -103,18 +114,23 @@ class HomePageState extends State<HomePage> {
                             ),
                           ),
                           Container(
+                            height: 55,
+                            child: Text(number, style: TextStyle(color: Colors.blue, fontSize: number.length <= 2? 60 : 25),),
+                            ),
+
+                          Container(
                             width: 250,
                             clipBehavior: Clip.hardEdge,
                             padding: const EdgeInsets.all(0),
+                            margin: EdgeInsets.only(top: 50),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
                                 border: Border.all(color: Colors.blue)),
                             child: TextButton(
                                 onPressed: () {
+                                  number = "please wait";
+                                  setState((){});
                                   _upload(image);
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context)=> PredictedNumber())
-                                  );
                                 },
                                 child: const Text(
                                   "Predict",
@@ -125,7 +141,8 @@ class HomePageState extends State<HomePage> {
                       )
                     : const SizedBox(
                         height: 100,
-                      )),
+                      ),
+            ),
             image == null
                 ? Column(
                     children: [

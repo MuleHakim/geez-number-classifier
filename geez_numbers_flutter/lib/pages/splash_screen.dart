@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Expanded(
-            child: Image(image: AssetImage('assets/images/logo.png')),
+            child: Image(image:  AssetImage('assets/images/logo.png')),
           ),
           const Center(
             child: DefaultTextStyle(
@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
             margin: const EdgeInsets.all(75),
             child: Button(
               "start",
-                  () => Navigator.of(context).push(
+                  () => Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) => const HomePage(),
                 ),

@@ -1,11 +1,9 @@
 from django.urls import path,include
-from rest_framework import routers
-from .views import ImageViewset
-from .views import PredictViewset
-router = routers.DefaultRouter()
-router.register(r'numbers',ImageViewset)
+from .views import creat_numbers,predict
 urlpatterns = [
-    path('',include(router.urls)),
-    path('api-auth/',include('rest_framework.urls',namespace='rest_framework')),
-    path('predict/',PredictViewset,name='predict'),
-]
+    path('create/',creat_numbers,name='createnumbers'),
+    path('predict/',predict,name='predict'),
+] 
+
+
+

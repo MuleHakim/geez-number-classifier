@@ -13,7 +13,7 @@
 ## How to use the backend?
 - download django - pip install django
 - dwonload django restframework - pip install django restframework
-- download tensoerflow- pip install tensorflow
+- download tensorflow- pip install tensorflow
 - download keras - pip install keras
 - download opencv2 - pip install opencv-python
 - download numpy - pip install numpy

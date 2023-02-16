@@ -16,18 +16,53 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-
   int _selectedIndex = 0;
   File? image;
   String number = "click predict button to continue";
-  var word_dict = {0:"-", 1:"፩", 2:"፪", 3:"፫", 4:"፬", 5:"፭", 6:"፮", 7:"፯", 8:"፰", 9:"፱", 10:'ሀ',11:'ሁ',12:'ሂ',13:'ሃ',14:"ሄ",15:'ህ',16:'ሆ',17:"ለ",18:"ሉ",
-  19:"ሊ",20:"ላ",21:"ሌ",22:"ል",23:"ሎ",24:"ሐ",25:"ሑ",26:"ሒ",27:"ሓ",28:"ሔ",29:"ሕ",30:"ሖ",
-  31:"መ",32:"ሙ",33:"ሚ",34:"ማ",35:"ሜ",36:"ም",37:"ሞ"
+  var word_dict = {
+    0: "-",
+    1: "፩",
+    2: "፪",
+    3: "፫",
+    4: "፬",
+    5: "፭",
+    6: "፮",
+    7: "፯",
+    8: "፰",
+    9: "፱",
+    10: 'ሀ',
+    11: 'ሁ',
+    12: 'ሂ',
+    13: 'ሃ',
+    14: "ሄ",
+    15: 'ህ',
+    16: 'ሆ',
+    17: "ለ",
+    18: "ሉ",
+    19: "ሊ",
+    20: "ላ",
+    21: "ሌ",
+    22: "ል",
+    23: "ሎ",
+    24: "ሐ",
+    25: "ሑ",
+    26: "ሒ",
+    27: "ሓ",
+    28: "ሔ",
+    29: "ሕ",
+    30: "ሖ",
+    31: "መ",
+    32: "ሙ",
+    33: "ሚ",
+    34: "ማ",
+    35: "ሜ",
+    36: "ም",
+    37: "ሞ"
   };
 
-  void reset_number(){
-    number = "click predict button to continue";
-    setState((){});
+  void reset_number() {
+    number = "click the predict button to continue";
+    setState(() {});
   }
 
   Future PickFromFile() async {
@@ -55,6 +90,7 @@ class HomePageState extends State<HomePage> {
     }
     reset_number();
   }
+
   void _upload(File? file) async {
     String? fileName = file?.path.split('/').last;
     FormData data = FormData.fromMap({
@@ -62,15 +98,17 @@ class HomePageState extends State<HomePage> {
         "${file?.path}",
         filename: fileName,
       ),
-      "creation_date":"${DateTime.now()}"
+      "creation_date": "${DateTime.now()}"
     });
 
     Dio dio = new Dio();
 
-    dio.post(ApiUrls.createUrl, data: data).then((response) async{
+    dio.post(ApiUrls.createUrl, data: data).then((response) async {
       var jsonResponse = jsonDecode(response.toString());
-      number = json.decode(((await client.get(Uri.parse(ApiUrls.predictNumberUrl))).body)) as String;
-      setState((){});
+      number = json.decode(
+              ((await client.get(Uri.parse(ApiUrls.predictNumberUrl))).body))
+          as String;
+      setState(() {});
       number = word_dict[int.parse(number)]!;
     }).catchError((error) => print(error));
   }
@@ -82,85 +120,182 @@ class HomePageState extends State<HomePage> {
         width: double.infinity,
         decoration: const BoxDecoration(
           color: const Color.fromARGB(255, 1, 3, 22),
-            ),
+        ),
         child: Column(
           mainAxisAlignment: image == null
               ? MainAxisAlignment.center
               : MainAxisAlignment.spaceBetween,
           children: [
             Container(
-                child: image != null
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+              child: image != null
+                  ? Expanded(
+                      child:
+                          MediaQuery.of(context).orientation.name == "portrait"
+                              ? get_column()
+                              : get_row(),
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            height: 400,
-                            width: 400,
-                            margin: const EdgeInsets.only(
-                                top: 100, bottom: 50, left: 15, right: 15),
-                            padding: const EdgeInsets.all(0),
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              boxShadow: const [
-                                BoxShadow(
-                                    color: Color.fromARGB(255, 9, 70, 121),
-                                    spreadRadius: 1),
-                              ],
-                            ),
-                            child: Image.file(
-                              image!,
-                              fit: BoxFit.cover,
+                            width: 350,
+                            margin: const EdgeInsets.all(10),
+                            child: const Text(
+                              "Choose the image from a folder or take a picture using the camera",
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 20),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                          Container(
-                            height: 55,
-                            child: Text(number, style: TextStyle(color: Colors.blue, fontSize: number.length <= 2? 60 : 25),),
-                            ),
-
-                          Container(
-                            width: 250,
-                            clipBehavior: Clip.hardEdge,
-                            padding: const EdgeInsets.all(0),
-                            margin: EdgeInsets.only(top: 50),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(color: Colors.blue)),
-                            child: TextButton(
-                                onPressed: () {
-                                  number = "please wait";
-                                  setState((){});
-                                  _upload(image);
-                                },
-                                child: const Text(
-                                  "Predict",
-                                  style: TextStyle(fontSize: 25),
-                                )),
-                          )
+                          Button("File", () => PickFromFile()),
+                          Button("Camera", () => PickFromCamera()),
                         ],
-                      )
-                    : const SizedBox(
-                        height: 100,
                       ),
+                    ),
             ),
-            image == null
-                ? Column(
-                    children: [
-                      Button("File", () => PickFromFile()),
-                      Button("Camera", () => PickFromCamera()),
-                    ],
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Button("File", () => PickFromFile()),
-                      Button("Camera", () => PickFromCamera()),
-                    ],
-                  )
           ],
         ),
       ),
+    );
+  }
 
+  Column get_column() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Container(
+            height: 400,
+            width: 400,
+            margin: const EdgeInsets.only(
+                top: 100, bottom: 50, left: 15, right: 15),
+            padding: const EdgeInsets.all(0),
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              boxShadow: const [
+                BoxShadow(
+                    color: Color.fromARGB(255, 9, 70, 121), spreadRadius: 1),
+              ],
+            ),
+            child: Image.file(
+              image!,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(bottom: 50),
+          child: Column(
+            children: [
+              Container(
+                height: 55,
+                child: Text(
+                  number,
+                  style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: number.length <= 2 ? 60 : 25),
+                ),
+              ),
+              Container(
+                width: 250,
+                clipBehavior: Clip.hardEdge,
+                padding: const EdgeInsets.all(0),
+                margin: EdgeInsets.only(top: 50),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: Colors.blue)),
+                child: TextButton(
+                    onPressed: () {
+                      number = "processing image...";
+                      setState(() {});
+                      _upload(image);
+                    },
+                    child: const Text(
+                      "Predict",
+                      style: TextStyle(fontSize: 25),
+                    )),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Button("File", () => PickFromFile()),
+                  Button("Camera", () => PickFromCamera()),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Row get_row() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Container(
+            height: 400,
+            width: 400,
+            margin:
+                const EdgeInsets.only(top: 35, bottom: 35, left: 15, right: 15),
+            padding: const EdgeInsets.all(0),
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              boxShadow: const [
+                BoxShadow(
+                    color: Color.fromARGB(255, 9, 70, 121), spreadRadius: 1),
+              ],
+            ),
+            child: Image.file(
+              image!,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: 55,
+              child: Text(
+                number,
+                style: TextStyle(
+                    color: Colors.blue, fontSize: number.length <= 2 ? 60 : 25),
+              ),
+            ),
+            Container(
+              width: 250,
+              clipBehavior: Clip.hardEdge,
+              padding: const EdgeInsets.all(0),
+              margin: EdgeInsets.only(top: 50),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.blue)),
+              child: TextButton(
+                  onPressed: () {
+                    number = "processing image...";
+                    setState(() {});
+                    _upload(image);
+                  },
+                  child: const Text(
+                    "Predict",
+                    style: TextStyle(fontSize: 25),
+                  )),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Button("File", () => PickFromFile()),
+                Button("Camera", () => PickFromCamera()),
+              ],
+            ),
+          ],
+        )
+      ],
     );
   }
 }

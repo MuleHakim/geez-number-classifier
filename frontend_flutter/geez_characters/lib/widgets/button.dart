@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
@@ -9,7 +8,7 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150,
+      width: 170,
       margin: const EdgeInsets.all(10),
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(

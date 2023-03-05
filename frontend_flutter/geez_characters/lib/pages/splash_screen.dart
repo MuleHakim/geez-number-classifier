@@ -32,8 +32,9 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           Container(
             margin: const EdgeInsets.only(top: 25, left: 15, right: 15),
-            height:
-                MediaQuery.of(context).orientation.name == "portrait" ? 75 : 50,
+            height: MediaQuery.of(context).orientation.name == "portrait"
+                ? 150
+                : 75,
             child: const TypeWriterText(
               text: Text(
                 "This application can detect some geez numbers. It can recognize digits from 0 - 9. Just give it an image containing the numbers, and it can detect that. Remember to give it an image that has the number lying in the center.",
@@ -48,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           Container(
             margin: EdgeInsets.all(
-                MediaQuery.of(context).orientation.name == "portrait" ? 75 : 5),
+                MediaQuery.of(context).orientation.name == "portrait" ? 50 : 5),
             child: Button(
               "start",
               () => Navigator.of(context).push(

@@ -8,8 +8,8 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 170,
-      margin: const EdgeInsets.all(10),
+      width: 150,
+      margin: const EdgeInsets.all(5),
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),

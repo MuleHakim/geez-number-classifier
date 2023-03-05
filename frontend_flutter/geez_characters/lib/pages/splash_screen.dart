@@ -15,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color.fromARGB(255, 1, 3, 22),
+      color: const Color.fromARGB(255, 255, 255, 255),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 MediaQuery.of(context).orientation.name == "portrait" ? 75 : 50,
             child: const TypeWriterText(
               text: Text(
-                "This application can detect some geez numbers. It can recognize digits from 0 - 9. Just give it an image containing the numbers, and it can detect that. Remeber to give it an image that has the number lying in the center.",
+                "This application can detect some geez numbers. It can recognize digits from 0 - 9. Just give it an image containing the numbers, and it can detect that. Remember to give it an image that has the number lying in the center.",
                 style: TextStyle(
                     decoration: TextDecoration.none,
                     fontSize: 15,

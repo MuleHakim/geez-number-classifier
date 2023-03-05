@@ -24,7 +24,7 @@ def predict(request):
     cnn = Cnn()
     image = cnn.read_image(image_path)
     number = cnn.re_shape(image).reshape(784)
-    print("---------------------------->")
+    
     predicted = cnn.predict_number(number)
 
     

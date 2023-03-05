@@ -119,7 +119,7 @@ class HomePageState extends State<HomePage> {
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
-          color: const Color.fromARGB(255, 1, 3, 22),
+          color: const Color.fromARGB(255,255,255,255),
         ),
         child: Column(
           mainAxisAlignment: image == null
@@ -265,7 +265,8 @@ class HomePageState extends State<HomePage> {
                 number,
                 style: TextStyle(
                     color: Colors.blue, fontSize: number.length <= 2 ? 60 : 25),
-              ),
+              textAlign: TextAlign.center, ),
+
             ),
             Container(
               width: 250,

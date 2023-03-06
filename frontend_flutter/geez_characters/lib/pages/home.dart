@@ -3,13 +3,15 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geez_numbers_flutter/pages/sketcher.dart';
 import 'package:geez_numbers_flutter/utility/http.dart';
 import 'package:image_picker/image_picker.dart';
 import '../api/urls.dart';
 import '../widgets/button.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String? path;
+  const HomePage({super.key, this.path});
 
   @override
   State<HomePage> createState() => HomePageState();
@@ -30,47 +32,42 @@ class HomePageState extends State<HomePage> {
     7: "፯",
     8: "፰",
     9: "፱",
-    10: 'ሀ',
-    11: 'ሁ',
-    12: 'ሂ',
-    13: 'ሃ',
-    14: "ሄ",
-    15: 'ህ',
-    16: 'ሆ',
-    17: "ለ",
-    18: "ሉ",
-    19: "ሊ",
-    20: "ላ",
-    21: "ሌ",
-    22: "ል",
-    23: "ሎ",
-    24: "ሐ",
-    25: "ሑ",
-    26: "ሒ",
-    27: "ሓ",
-    28: "ሔ",
-    29: "ሕ",
-    30: "ሖ",
-    31: "መ",
-    32: "ሙ",
-    33: "ሚ",
-    34: "ማ",
-    35: "ሜ",
-    36: "ም",
-    37: "ሞ"
+    10: '፲',
+    11: '፳',
+    12: '፴',
+    13: '፵',
+    14: "፶",
+    15: '፷',
+    16: '፸',
+    17: "፹",
+    18: "፺",
+    19: "፻",
   };
+
+  @override
+  void initState() {
+    if (widget.path != null){
+      PickFromFile(path: widget.path);
+    }
+  }
 
   void reset_number() {
     number = "click the predict button to continue";
     setState(() {});
   }
 
-  Future PickFromFile() async {
+  Future PickFromFile({path = null}) async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return;
-
-      final imageTemp = File(image.path);
+      late File imageTemp;
+      if (path == null) {
+        final image = await ImagePicker().pickImage(
+            source: ImageSource.gallery);
+        if (image == null) return;
+        imageTemp = File(image.path);
+      }
+      else{
+        imageTemp = File(path);
+      }
       setState(() => this.image = imageTemp);
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
@@ -111,6 +108,7 @@ class HomePageState extends State<HomePage> {
       setState(() {});
       number = word_dict[int.parse(number)]!;
     }).catchError((error) => print(error));
+
   }
 
   @override
@@ -150,6 +148,14 @@ class HomePageState extends State<HomePage> {
                           ),
                           Button("File", () => PickFromFile()),
                           Button("Camera", () => PickFromCamera()),
+                          Button("Sketch", ()
+                          {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => Sketcher(),
+                                      ),
+                                    );
+                                  }),
                         ],
                       ),
                     ),
@@ -190,13 +196,15 @@ class HomePageState extends State<HomePage> {
           child: Column(
             children: [
               Container(
-                height: 55,
+                height: 75,
                 child: Text(
                   number,
                   style: TextStyle(
                       color: Colors.blue,
-                      fontSize: number.length <= 2 ? 60 : 25),
+                      fontSize: number.length <= 2 ? 60 : 20),
+                  textAlign: TextAlign.center,
                 ),
+
               ),
               Container(
                 width: 250,
@@ -220,8 +228,7 @@ class HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Button("File", () => PickFromFile()),
-                  Button("Camera", () => PickFromCamera()),
+                  Button("Back", () => Navigator.pop(context))
                 ],
               ),
             ],
@@ -260,11 +267,11 @@ class HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: 55,
+              height: 75,
               child: Text(
                 number,
                 style: TextStyle(
-                    color: Colors.blue, fontSize: number.length <= 2 ? 60 : 25),
+                    color: Colors.blue, fontSize: number.length <= 2 ? 60 : 20),
               textAlign: TextAlign.center, ),
 
             ),
@@ -290,8 +297,7 @@ class HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Button("File", () => PickFromFile()),
-                Button("Camera", () => PickFromCamera()),
+                Button("Back", () => Navigator.pop(context))
               ],
             ),
           ],
@@ -300,3 +306,4 @@ class HomePageState extends State<HomePage> {
     );
   }
 }
+

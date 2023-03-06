@@ -18,10 +18,13 @@ def creat_numbers(request):
 @api_view(["GET"])
 def predict(request):
     geez_numbers = NumbersImage.objects.order_by('-creation_date')
+   
     image_path = geez_numbers[0].image_url
-    
+
     image_path = os.path.join('numbers/',str(image_path))
+
     cnn = Cnn()
+    
     image = cnn.read_image(image_path)
     number = cnn.re_shape(image).reshape(784)
     
